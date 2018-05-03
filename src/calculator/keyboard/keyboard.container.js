@@ -4,35 +4,17 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import uuidv1 from 'uuid/v1'
 
-import { 
-    selectNumber, 
-    selectOperator, 
-    submitNumber, 
-    clearCalculatorState,
-    submitOperator,
-    calculateExpression
-} from './keyboard.actions'
+import { handleUserInput } from './keyboard.actions'
 
+import { CALCULATOR_BUTTONS } from '../../modules/constants/ui.constants'
 import './keyboard.css'
-import { CALCULATOR_BUTTONS, OPERATORS } from '../../modules/ui.constants'
 
 const Keyboard = (props) => {
 
-    /**
-     * Application kernel, it looks for input and decides what to do based on:
-     * - key or click event, number, operator, evaluator, clear state
-     */
-    function handleUserInput (event) {
-        event.persist()
+    const { handleUserInput } = props
 
-        const { key, target } = event
-        const { selectNumber, selectOperator, calculateExpression, currentNumber, clearCalculatorState } = props
-        const value = key ? key : target.innerHTML
-
-        if (Number.parseInt(value)) selectNumber(currentNumber.toString() + value)
-        if (OPERATORS.includes(value)) selectOperator(value)
-        if (value === '=') calculateExpression()
-        if (value === 'Escape' || value === 'AC') clearCalculatorState()
+    function handleInput (event) {
+        return handleUserInput(event)
     }
 
     const renderKeyboardButtons = () => 
@@ -45,9 +27,9 @@ const Keyboard = (props) => {
     return (
         <div className="calc">
             <div 
-                tabIndex="1" 
-                onKeyDown={event => handleUserInput(event)}
-                onClick={event => handleUserInput(event)}
+                ref={calc => calc && calc.focus()}
+                onKeyDown={handleInput}
+                onClick={handleInput}
                 className='calc--keyboard'
             >
                 {renderKeyboardButtons()}
@@ -64,11 +46,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    selectNumber,
-    selectOperator,
-    submitNumber,
-    clearCalculatorState,
-    calculateExpression,
+    handleUserInput
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Keyboard)

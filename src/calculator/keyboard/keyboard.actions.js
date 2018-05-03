@@ -1,4 +1,21 @@
 import Store from '../../store/store.dev'
+import { evaluateExpression, generateExpression } from '../../modules/evaluator/expressions'
+import { OPERATORS } from '../../modules/constants/ui.constants'
+
+/**
+ * Application kernel in the sense that it looks for input and decides what to do based on:
+ * - key or click event, number, operator, evaluator, clear state
+ */
+export const handleUserInput = event => dispatch => {
+    event.persist()
+    const { key, target } = event
+    const value = key ? key : target.innerHTML
+
+    if (Number.parseInt(value)) dispatch(selectNumber(Store.getState().calculator.currentNumber.toString() + value))
+    if (OPERATORS.includes(value)) dispatch(selectOperator(value))
+    if (value === '=') dispatch(calculateExpression())
+    if (value === 'Escape' || value === 'AC') dispatch(clearCalculatorState())
+}
 
 // number acitons
 export const selectNumber = number => ({
@@ -12,13 +29,13 @@ export const submitNumber = () => ({
 })
 
 // operation actions
-export const selectOperator = operator => async (dispatch) => {
-    await dispatch(submitNumber())
-    await dispatch({
+export const selectOperator = operator => dispatch => {
+    dispatch(submitNumber())
+    dispatch({
         type: 'keyboard/SELECT_OPERATOR',
         value: operator
     })
-    await dispatch({
+    dispatch({
         type: 'keyboard/CANT_SELECT_OPERATOR',
         value: null
     })
@@ -36,67 +53,11 @@ export const clearCalculatorState = () => ({
 })
 
 export const calculateExpression = () => {
-
     const { calculator } = Store.getState()
     const { numbers, operations } = calculator
-
-    function generateExpression(numbers, operations){
-        var expression = [];
-        for(var i = 0; i < numbers.length; i++){
-            expression.push(numbers[i]);
-            expression.push(operations[i]);
-        }
-        return expression.join('');
-    }
-
     return {
         type: 'calculator/CALCULATE_EXPRESSION',
         value: evaluateExpression(generateExpression(numbers, operations))
     }
 }
-
-function evaluateExpression (expr) {
-
-    var chars = expr.split("");
-    var n = [], op = [], index = 0, oplast = true;
-
-    n[index] = "";
-
-    // Parse the expression
-    for (var c = 0; c < chars.length; c++) {
-
-        if (isNaN(parseInt(chars[c])) && chars[c] !== "." && !oplast) {
-            op[index] = chars[c];
-            index++;
-            n[index] = "";
-            oplast = true;
-        } else {
-            n[index] += chars[c];
-            oplast = false;
-        }
-    }
-
-    // Calculate the expression
-    expr = parseFloat(n[0]);
-    for (var o = 0; o < op.length; o++) {
-        var num = parseFloat(n[o + 1]);
-        switch (op[o]) {
-            case "+":
-                expr = expr + num;
-                break;
-            case "-":
-                expr = expr - num;
-                break;
-            case "*":
-                expr = expr * num;
-                break;
-            case "/":
-                expr = expr / num;
-                break;
-        }
-    }
-
-    return expr;
-}
-
 

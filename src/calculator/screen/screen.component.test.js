@@ -17,15 +17,15 @@ describe('Screen tests', () => {
         )
     })
 
-    it("should render without throwing an error", () => {
+    it("It should render without throwing an error", () => {
         expect(component.exists()).toBe(true)
     })
     
-    it("should show the right text", () => {
+    it("It should show the right text", () => {
       expect(component.text()).toBe('')
     })
     
-    it("It should be wrapped in a provider", () => {
+    it("It should have the correct markup", () => {
       const SCREEN_HTML = `<div class="screen"><span class="screen--number"></span></div>`
       expect(component.html()).toBe(SCREEN_HTML)
     })
