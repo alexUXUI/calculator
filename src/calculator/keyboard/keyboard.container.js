@@ -18,21 +18,15 @@ import { CALCULATOR_BUTTONS, OPERATORS } from '../../modules/ui.constants'
 
 const Keyboard = (props) => {
 
+    /**
+     * Application kernel, it looks for input and decides what to do based on:
+     * - key or click event, number, operator, evaluator, clear state
+     */
     function handleUserInput (event) {
         event.persist()
 
         const { key, target } = event
         const { selectNumber, selectOperator, calculateExpression, currentNumber, clearCalculatorState } = props
-        
-        /**
-         * This block looks for the following:
-         * - key or click event
-         * - number
-         * - operator
-         * - evaluator
-         * - clear state / exit
-         */
-
         const value = key ? key : target.innerHTML
 
         if (Number.parseInt(value)) selectNumber(currentNumber.toString() + value)
@@ -69,7 +63,7 @@ const mapStateToProps = state => ({
     operations: state.calculator.operations
 })
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({
+const mapDispatchToProps = dispatch => bindActionCreators({
     selectNumber,
     selectOperator,
     submitNumber,
