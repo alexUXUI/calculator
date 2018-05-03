@@ -1,9 +1,9 @@
-import Store from '../../store/store.dev'
 import { evaluateExpression } from '../../modules/evaluator/expressions'
+import Store from '../../store/store.dev'
 import { OPERATORS } from '../../modules/constants/ui.constants'
 
 /**
- * Application kernel in the sense that it looks for input and decides what to do based on:
+ * This is kind of the app kernel in the sense that it looks for input and decides what to do based on:
  * - key or click event, number, operator, evaluator, clear state
  */
 export const handleUserInput = event => dispatch => {
@@ -13,9 +13,9 @@ export const handleUserInput = event => dispatch => {
     const { key, target } = event
     const value = key ? key : target.innerHTML
     
-    if (Number.parseInt(value)) dispatch(selectNumber(currentNumber.toString() + value))
+    if (Number.parseInt(value) || value === '0' || value === '.') dispatch(selectNumber(currentNumber.toString() + value))
     if (OPERATORS.includes(value)) dispatch(selectOperator(value))
-    if (value === '=') dispatch(calculateExpression())
+    if (value === '=' || value === 'Enter' ) dispatch(calculateExpression())
     if (value === 'Escape' || value === 'AC') dispatch(clearCalculatorState())
 }
 
@@ -62,4 +62,3 @@ export const calculateExpression = () => {
         value: evaluateExpression(numbers, operations)
     }
 }
-

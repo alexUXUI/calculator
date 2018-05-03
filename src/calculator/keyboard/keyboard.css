@@ -1,4 +1,7 @@
-.calc--keyboard {
+div.calc--keyboard:focus {
+    border: none;
+    background: #ccc;
+    outline: none;
 }
 
 .keyboard--button {
@@ -7,4 +10,24 @@
     height: 50px;
     margin: 1px;
     border: none;
+    /* box-shadow: .5px .5px grey; */
+}
+
+.keyboard--button:hover {
+    background: #464646;
+    color: white;
+}
+
+.keyboard--button__operation {
+    background: orange;
+    color: white;
+}
+
+.keyboard--button__etc {
+    background: #ccc;
+    color: white;
+}
+
+.keyboard--button__number {
+    
 }

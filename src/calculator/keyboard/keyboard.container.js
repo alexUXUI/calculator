@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -6,23 +5,39 @@ import uuidv1 from 'uuid/v1'
 
 import { handleUserInput } from './keyboard.actions'
 
-import { CALCULATOR_BUTTONS } from '../../modules/constants/ui.constants'
+import { CALCULATOR_BUTTONS, OPERATORS, OPERATOR_TYPES, OTHER_BUTTON_TYPES } from '../../modules/constants/ui.constants'
 import './keyboard.css'
 
 const Keyboard = (props) => {
 
     const { handleUserInput } = props
 
-    function handleInput (event) {
+    const handleInput = event => {
         return handleUserInput(event)
     }
 
     const renderKeyboardButtons = () => 
-        CALCULATOR_BUTTONS.map(button => 
-            <button className='keyboard--button' key={uuidv1()}>
-                { button }
-            </button>
-        )
+        CALCULATOR_BUTTONS.map(button => {
+            if (OPERATOR_TYPES.includes(button)) { // all other buttons
+                return (
+                    <button className='keyboard--button keyboard--button__operation' key={uuidv1()}>
+                       { button }
+                    </button>
+                )
+            } else if (OTHER_BUTTON_TYPES.includes(button)) { // operator buttons
+                return (
+                    <button className='keyboard--button keyboard--button__etc' key={uuidv1()}>
+                     { button }
+                    </button>
+                )
+            } else if (typeof Number.parseFloat(button) === 'number' || button === '.') { // number buttons
+                return (
+                    <button className='keyboard--button keyboard--button__number' key={uuidv1()}>
+                        { button }
+                    </button>
+                )
+            }
+        })
 
     return (
         <div className="calc">
@@ -39,15 +54,8 @@ const Keyboard = (props) => {
     )
 }
 
-const mapStateToProps = state => ({
-    currentNumber: state.calculator.currentNumber,
-    inputMode: state.calculator.inputMode,
-    numbers: state.calculator.numbers,
-    operations: state.calculator.operations
-})
-
 const mapDispatchToProps = dispatch => bindActionCreators({
     handleUserInput
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(Keyboard)
+export default connect(null, mapDispatchToProps)(Keyboard)

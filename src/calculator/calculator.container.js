@@ -4,24 +4,21 @@ import Keyboard from './keyboard/keyboard.container';
 import Screen from './screen/screen.component';
 import './calculator.css'
 
-const Calculator = props => {
+const Calculator = props => (
+    <div 
+        className="calc"
+    >
+        <Screen 
+            currentNumber={props.currentNumber}
+            expressionValue={props.expressionValue}
+        />
+        <Keyboard/>
+    </div>
+)
 
-    const { expressionValue, currentNumber } = props
-
-    return (
-        <div className="calc">
-            <Screen 
-                currentNumber={currentNumber}
-                expressionValue={expressionValue}
-            />
-            <Keyboard />
-        </div>
-    )
-}
-
-const mapStateToProps = state => ({
-    currentNumber: state.calculator.currentNumber,
-    expressionValue: state.calculator.expressionValue,
+const mapStateToProps = ({calculator}) => ({
+    currentNumber: calculator.currentNumber,
+    expressionValue: calculator.expressionValue,
 })
 
 export default connect(mapStateToProps, null)(Calculator)

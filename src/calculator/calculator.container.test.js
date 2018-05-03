@@ -29,10 +29,6 @@ describe('Calc tests', () => {
         expect(component.exists()).toBe(true)
     })
     
-    it("should show the right text on the buttons", () => {
-        expect(component.text()).toBe('AC+/-%/789*456-123+0.|=')
-    })
-    
     it("It should be wrapped in a provider", () => {
         expect(component.type()).toBe(Provider);
     })
