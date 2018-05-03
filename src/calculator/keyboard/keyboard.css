@@ -1,0 +1,10 @@
+.calc--keyboard {
+}
+
+.keyboard--button {
+    width: calc(25% - 2px);
+    background: #eaeaea;
+    height: 50px;
+    margin: 1px;
+    border: none;
+}
