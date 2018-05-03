@@ -1,12 +1,11 @@
 div.calc--keyboard:focus {
     border: none;
-    background: #ccc;
-    outline: none;
+    outline: 1px gold;
 }
 
 .keyboard--button {
     width: calc(25% - 2px);
-    background: #eaeaea;
+    background: #f9f9f0;
     height: 50px;
     margin: 1px;
     border: none;
@@ -24,7 +23,7 @@ div.calc--keyboard:focus {
 }
 
 .keyboard--button__etc {
-    background: #ccc;
+    background: rgb(169, 169, 169);
     color: white;
 }
 
