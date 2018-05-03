@@ -1,7 +1,8 @@
 
 import React from 'react'
-import uuidv1 from 'uuid/v1'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import uuidv1 from 'uuid/v1'
 
 import { 
     selectNumber, 
@@ -13,83 +14,52 @@ import {
 } from './keyboard.actions'
 
 import './keyboard.css'
+import { CALCULATOR_BUTTONS, OPERATORS } from '../../modules/ui.constants'
 
-const operators = ['+','-','*','/','%', '=', '+/-']
-const calculatorButtons = ['AC', '+/-', '%', '/', 7, 8, 9, '*', 4, 5, 6, '-', 1, 2, 3, '+', 0, '.', '|', '=']
+const Keyboard = (props) => {
 
-class Keyboard extends React.Component {
-    componentWillUpdate(props, nextProps) {
-        // console.log('component will update: props | next props', JSON.stringify(props), JSON.stringify(nextProps))
-    }
-
-    constructor(props) {
-        super(props)
-        this.state = {
-            operators: operators,
-            calculatorButtons: calculatorButtons,
-        }
-    }
-
-    handleUserInput (event) {
+    function handleUserInput (event) {
         event.persist()
 
         const { key, target } = event
-        const { operators } = this.state
-        const { 
-            selectNumber, 
-            selectOperator, 
-            calculateExpression, 
-            currentNumber,
-            clearCalculatorState 
-        } = this.props
+        const { selectNumber, selectOperator, calculateExpression, currentNumber, clearCalculatorState } = props
         
-        // key or click event
+        /**
+         * This block looks for the following:
+         * - key or click event
+         * - number
+         * - operator
+         * - evaluator
+         * - clear state / exit
+         */
+
         const value = key ? key : target.innerHTML
 
-        // number
-        if (Number.parseInt(value)) {
-            selectNumber(currentNumber.toString() + value)
-        }
-
-        // operator
-        if (operators.includes(value)) {
-            selectOperator(value)
-        }
-        
-        // evaluator
-        if (value === '=') {
-            calculateExpression()
-        }
-
-        // clear state
-        if (value === 'Escape' || value === 'AC') {
-            clearCalculatorState()
-        }
+        if (Number.parseInt(value)) selectNumber(currentNumber.toString() + value)
+        if (OPERATORS.includes(value)) selectOperator(value)
+        if (value === '=') calculateExpression()
+        if (value === 'Escape' || value === 'AC') clearCalculatorState()
     }
 
-    render() {
-        return (
-            <div className="calc">
-                <div 
-                    tabIndex="1" 
-                    onKeyDown={event => this.handleUserInput(event)}
-                    onClick={event => this.handleUserInput(event)}
-                    className='calc--keyboard'
-                >
-                    {
-                        this.state.calculatorButtons.map(button => 
-                            <button 
-                                className='keyboard--button'
-                                key={uuidv1()}
-                            >
-                                { button }
-                            </button>
-                        )
-                    }
-                </div>    
-            </div>
+    const renderKeyboardButtons = () => 
+        CALCULATOR_BUTTONS.map(button => 
+            <button className='keyboard--button' key={uuidv1()}>
+                { button }
+            </button>
         )
-    }
+
+    return (
+        <div className="calc">
+            <div 
+                tabIndex="1" 
+                onKeyDown={event => handleUserInput(event)}
+                onClick={event => handleUserInput(event)}
+                className='calc--keyboard'
+            >
+                {renderKeyboardButtons()}
+            </div>    
+        </div>
+    )
 }
 
 const mapStateToProps = state => ({
@@ -99,12 +69,12 @@ const mapStateToProps = state => ({
     operations: state.calculator.operations
 })
 
-const mapDispatchToProps = dispatch => ({
-    selectNumber: (key) => dispatch(selectNumber(key)),
-    selectOperator: (value) => dispatch(selectOperator(value)),
-    submitNumber: () => dispatch(submitNumber()),
-    clearCalculatorState: () => dispatch(clearCalculatorState()),
-    calculateExpression: () => dispatch(calculateExpression()),
-})
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+    selectNumber,
+    selectOperator,
+    submitNumber,
+    clearCalculatorState,
+    calculateExpression,
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Keyboard)
