@@ -28,6 +28,7 @@ const Keyboard = (props) => {
         <div className="calc">
             <div 
                 ref={calc => calc && calc.focus()}
+                tabIndex="1" 
                 onKeyDown={handleInput}
                 onClick={handleInput}
                 className='calc--keyboard'

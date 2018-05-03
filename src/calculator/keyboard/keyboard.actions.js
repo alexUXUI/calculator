@@ -1,5 +1,5 @@
 import Store from '../../store/store.dev'
-import { evaluateExpression, generateExpression } from '../../modules/evaluator/expressions'
+import { evaluateExpression } from '../../modules/evaluator/expressions'
 import { OPERATORS } from '../../modules/constants/ui.constants'
 
 /**
@@ -8,10 +8,12 @@ import { OPERATORS } from '../../modules/constants/ui.constants'
  */
 export const handleUserInput = event => dispatch => {
     event.persist()
+
+    const { currentNumber } = Store.getState().calculator
     const { key, target } = event
     const value = key ? key : target.innerHTML
-
-    if (Number.parseInt(value)) dispatch(selectNumber(Store.getState().calculator.currentNumber.toString() + value))
+    
+    if (Number.parseInt(value)) dispatch(selectNumber(currentNumber.toString() + value))
     if (OPERATORS.includes(value)) dispatch(selectOperator(value))
     if (value === '=') dispatch(calculateExpression())
     if (value === 'Escape' || value === 'AC') dispatch(clearCalculatorState())
@@ -57,7 +59,7 @@ export const calculateExpression = () => {
     const { numbers, operations } = calculator
     return {
         type: 'calculator/CALCULATE_EXPRESSION',
-        value: evaluateExpression(generateExpression(numbers, operations))
+        value: evaluateExpression(numbers, operations)
     }
 }
 
