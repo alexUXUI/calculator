@@ -18,8 +18,4 @@ const Screen = props => {
     )
 }
 
-const mapStateToProps = state => ({
-    expressionValue: state.calculator.expressionValue
-})
-
-export default connect(mapStateToProps, null)(Screen)
+export default Screen
